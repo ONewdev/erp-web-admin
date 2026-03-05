@@ -1,0 +1,10 @@
+.env.production
+.env.development
+.env.docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+*.sql
+*.md
+.DS_Store
+.git

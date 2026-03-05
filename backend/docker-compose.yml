@@ -1,0 +1,61 @@
+services:
+  # ─── PHP 7.3 + Apache ───────────────────────────
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: erp-php
+    ports:
+      - "8001:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+    restart: unless-stopped
+
+  # ─── MariaDB 10.4 ──────────────────────────────
+  db:
+    image: mariadb:10.4
+    container_name: erp-db
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bci_db
+      MYSQL_USER: root_dev
+      MYSQL_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./.docker/mariadb.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./.docker/init.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # ─── phpMyAdmin ─────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    platform: linux/amd64
+    container_name: erp-pma
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db_data:
