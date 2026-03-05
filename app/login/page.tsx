@@ -18,7 +18,7 @@ export default function LoginPage() {
 
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth.php`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/auth.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action: "login", username, password }),
