@@ -1,0 +1,14 @@
+
+# Enable CORS at Apache level (handles preflight before PHP runs)
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http://localhost:3000" CORS_ORIGIN=$0
+    Header always set Access-Control-Allow-Origin "%{CORS_ORIGIN}e" env=CORS_ORIGIN
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, X-API-KEY, Authorization"
+    Header always set Access-Control-Allow-Credentials "true"
+
+    # Return 200 immediately for OPTIONS preflight
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule .* - [R=200,L]
+</IfModule>
