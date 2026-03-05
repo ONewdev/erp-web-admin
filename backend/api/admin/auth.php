@@ -1,12 +1,11 @@
 <?php
 // auth.php
-// เพิ่ม CORS header
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Type: application/json');
+require_once '../../config/cors.php';
+require_once '../../config/database.php';
+$database = new Database();
+$conn = $database->getConnection();
 
-require_once 'config.php';
+header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
 

@@ -1,14 +1,32 @@
+# Disable directory browsing
+Options -Indexes
 
-# Enable CORS at Apache level (handles preflight before PHP runs)
+# Protect hidden files (.env, .git, etc.)
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow .htaccess (though ignored by the above rule usually, explicit allow for admin if needed, but better denied)
+<Files ".htaccess">
+    Order allow,deny
+    Deny from all
+</Files>
+
 <IfModule mod_headers.c>
-    SetEnvIf Origin "http://localhost:3000" CORS_ORIGIN=$0
-    Header always set Access-Control-Allow-Origin "%{CORS_ORIGIN}e" env=CORS_ORIGIN
-    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header always set Access-Control-Allow-Headers "Content-Type, X-API-KEY, Authorization"
-    Header always set Access-Control-Allow-Credentials "true"
+    # Security Headers
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+    # Remove Server header for security
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
 
-    # Return 200 immediately for OPTIONS preflight
+<IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule .* - [R=200,L]
+    
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
