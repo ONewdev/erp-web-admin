@@ -39,6 +39,7 @@ export default function JobAdminPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingJob, setEditingJob] = useState<Job | null>(null);
     const [saving, setSaving] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
 
     // Form State
     const [formData, setFormData] = useState<Partial<Job>>({
@@ -79,6 +80,7 @@ export default function JobAdminPage() {
     };
 
     const handleOpenModal = (job: Job | null = null) => {
+        setImageFile(null);
         if (job) {
             setEditingJob(job);
             setFormData(job);
@@ -107,11 +109,29 @@ export default function JobAdminPage() {
         e.preventDefault();
         setSaving(true);
         try {
-            const method = editingJob ? "PUT" : "POST";
+            const formDataToSend = new FormData();
+            
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                    if (key === 'image') return; // Skip image string, we handle it below
+                    formDataToSend.append(key, value.toString());
+                }
+            });
+
+            if (imageFile) {
+                formDataToSend.append('image', imageFile);
+            } else if (formData.image && typeof formData.image === 'string') {
+                formDataToSend.append('image_url', formData.image);
+            }
+
+            if (editingJob) {
+                formDataToSend.append('id', editingJob.id.toString());
+                formDataToSend.append('_method', 'PUT');
+            }
+
             const response = await fetch(API_URL, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editingJob ? { ...formData, id: editingJob.id } : formData)
+                method: "POST",
+                body: formDataToSend
             });
             const result = await response.json();
             if (result.success) {
@@ -129,7 +149,8 @@ export default function JobAdminPage() {
 
     const toggleVisibility = async (job: Job) => {
         try {
-            const updatedJob = { ...job, is_visible: job.is_visible === 1 ? 0 : 1 };
+            const currentIsVisible = Number(job.is_visible);
+            const updatedJob = { ...job, is_visible: currentIsVisible === 1 ? 0 : 1 };
             const response = await fetch(API_URL, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -163,6 +184,7 @@ export default function JobAdminPage() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            setImageFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setFormData({ ...formData, image: reader.result as string });
@@ -178,6 +200,13 @@ export default function JobAdminPage() {
             document.body.style.overflow = "unset";
         }
     }, [isModalOpen]);
+
+    const getImageUrl = (path?: string) => {
+        if (!path) return "";
+        if (path.startsWith("http") || path.startsWith("data:")) return path;
+        const baseUrl = process.env.NEXT_PUBLIC_IMAGE_URL || "/backend/";
+        return `${baseUrl}${path.startsWith('/') ? path.slice(1) : path}`;
+    };
 
     const filteredJobs = jobs.filter(job =>
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -242,12 +271,14 @@ export default function JobAdminPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredJobs.map((job) => (
-                                    <tr key={job.id} className={`border-b border-slate-50 hover:bg-slate-50/30 transition-colors group ${job.is_visible === 0 ? "opacity-60 bg-slate-50/50" : ""}`}>
-                                        <td className="px-6 py-6 text-center font-bold text-slate-400">
-                                            {job.sort_order}
-                                        </td>
-                                        <td className="px-8 py-6">
+                                    {filteredJobs.map((job) => {
+                                        const isVisible = Number(job.is_visible) === 1;
+                                        return (
+                                        <tr key={job.id} className={`border-b border-slate-50 hover:bg-slate-50/30 transition-colors group ${!isVisible ? "opacity-60 bg-slate-50/50" : ""}`}>
+                                            <td className="px-6 py-6 text-center font-bold text-slate-400">
+                                                {job.sort_order}
+                                            </td>
+                                            <td className="px-8 py-6">
                                             <div>
                                                 <div className="font-bold text-slate-800 text-base group-hover:text-brand transition-colors">{job.title}</div>
                                                 <div className="text-slate-400 text-xs font-medium line-clamp-1">{job.workType || 'งานประจำ'}</div>
@@ -261,9 +292,9 @@ export default function JobAdminPage() {
                                         <td className="px-6 py-6 text-center">
                                             <button
                                                 onClick={() => toggleVisibility(job)}
-                                                className={`w-12 h-6 rounded-full relative transition-all duration-300 ${job.is_visible === 1 ? "bg-emerald-500" : "bg-slate-200"}`}
+                                                className={`w-12 h-6 rounded-full relative transition-all duration-300 ${isVisible ? "bg-emerald-500" : "bg-slate-200"}`}
                                             >
-                                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${job.is_visible === 1 ? "left-7" : "left-1"}`}></div>
+                                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${isVisible ? "left-7" : "left-1"}`}></div>
                                             </button>
                                         </td>
                                         <td className="px-6 py-6">
@@ -295,7 +326,8 @@ export default function JobAdminPage() {
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -338,8 +370,8 @@ export default function JobAdminPage() {
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">จำนวนที่รับ</label>
                                         <input
                                             type="number"
-                                            value={formData.positions}
-                                            onChange={(e) => setFormData({ ...formData, positions: parseInt(e.target.value) })}
+                                            value={formData.positions ?? ""}
+                                            onChange={(e) => setFormData({ ...formData, positions: e.target.value ? Number(e.target.value) : 0 })}
                                             className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:border-brand transition-all font-bold text-slate-800"
                                         />
                                     </div>
@@ -348,8 +380,8 @@ export default function JobAdminPage() {
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">ลำดับการแสดงผล</label>
                                         <input
                                             type="number"
-                                            value={formData.sort_order}
-                                            onChange={(e) => setFormData({ ...formData, sort_order: parseInt(e.target.value) })}
+                                            value={formData.sort_order ?? ""}
+                                            onChange={(e) => setFormData({ ...formData, sort_order: e.target.value ? Number(e.target.value) : 0 })}
                                             className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:border-brand transition-all font-bold text-slate-800"
                                         />
                                     </div>
@@ -372,12 +404,12 @@ export default function JobAdminPage() {
                                         <div className="flex items-center gap-4 px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl">
                                             <button
                                                 type="button"
-                                                onClick={() => setFormData({ ...formData, is_visible: formData.is_visible === 1 ? 0 : 1 })}
-                                                className={`w-12 h-6 rounded-full relative transition-all duration-300 ${formData.is_visible === 1 ? "bg-emerald-500" : "bg-slate-300"}`}
+                                                onClick={() => setFormData({ ...formData, is_visible: Number(formData.is_visible) === 1 ? 0 : 1 })}
+                                                className={`w-12 h-6 rounded-full relative transition-all duration-300 ${Number(formData.is_visible) === 1 ? "bg-emerald-500" : "bg-slate-300"}`}
                                             >
-                                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${formData.is_visible === 1 ? "left-7" : "left-1"}`}></div>
+                                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${Number(formData.is_visible) === 1 ? "left-7" : "left-1"}`}></div>
                                             </button>
-                                            <span className="text-sm font-bold text-slate-600">{formData.is_visible === 1 ? "แสดงบนเว็บไซต์" : "ซ่อนจากเว็บไซต์"}</span>
+                                            <span className="text-sm font-bold text-slate-600">{Number(formData.is_visible) === 1 ? "แสดงบนเว็บไซต์" : "ซ่อนจากเว็บไซต์"}</span>
                                         </div>
                                     </div>
 
@@ -463,10 +495,13 @@ export default function JobAdminPage() {
                                         <div className="flex items-center gap-4">
                                             {formData.image ? (
                                                 <div className="w-24 h-24 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50 flex-shrink-0 relative group/img">
-                                                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                                                    <img src={getImageUrl(formData.image)} alt="Preview" className="w-full h-full object-cover" />
                                                     <button
                                                         type="button"
-                                                        onClick={() => setFormData({ ...formData, image: "" })}
+                                                        onClick={() => {
+                                                            setImageFile(null);
+                                                            setFormData({ ...formData, image: "" });
+                                                        }}
                                                         className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center text-white"
                                                     >
                                                         <Trash2 className="w-5 h-5" />

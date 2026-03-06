@@ -6,6 +6,9 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $method = $_SERVER['REQUEST_METHOD'];
+if ($method === 'POST' && isset($_POST['_method']) && strtoupper($_POST['_method']) === 'PUT') {
+    $method = 'PUT';
+}
 
 if ($method == 'GET') {
     try {
@@ -25,7 +28,22 @@ if ($method == 'GET') {
     }
 } elseif ($method == 'POST') {
     // Add new job
-    $data = json_decode(file_get_contents("php://input"), true);
+    if (isset($_SERVER["CONTENT_TYPE"]) && strpos($_SERVER["CONTENT_TYPE"], "multipart/form-data") !== false) {
+        $data = $_POST;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+            require_once '../utils/upload.php';
+            try {
+                $data['image'] = uploadImage($_FILES['image']);
+            } catch (Exception $e) {
+                echo json_encode(["success" => false, "message" => $e->getMessage()]);
+                exit;
+            }
+        } else {
+            $data['image'] = $data['image_url'] ?? '';
+        }
+    } else {
+        $data = json_decode(file_get_contents("php://input"), true);
+    }
 
     if (empty($data['title'])) {
         echo json_encode(["success" => false, "message" => "Title is required"]);
@@ -60,7 +78,23 @@ if ($method == 'GET') {
     }
 } elseif ($method == 'PUT') {
     // Update existing job
-    $data = json_decode(file_get_contents("php://input"), true);
+    // If it was a POST disguised as PUT, we have $_POST
+    if (isset($_SERVER["CONTENT_TYPE"]) && strpos($_SERVER["CONTENT_TYPE"], "multipart/form-data") !== false) {
+        $data = $_POST;
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+            require_once '../utils/upload.php';
+            try {
+                $data['image'] = uploadImage($_FILES['image']);
+            } catch (Exception $e) {
+                echo json_encode(["success" => false, "message" => $e->getMessage()]);
+                exit;
+            }
+        } else {
+            $data['image'] = $data['image_url'] ?? $data['image'] ?? '';
+        }
+    } else {
+        $data = json_decode(file_get_contents("php://input"), true);
+    }
 
     if (empty($data['id'])) {
         echo json_encode(["success" => false, "message" => "ID is required for update"]);
@@ -71,18 +105,18 @@ if ($method == 'GET') {
         $stmt = $conn->prepare("UPDATE jobs SET title=?, positions=?, description=?, workType=?, tags=?, responsibilities=?, benefits=?, qualifications=?, contact=?, status=?, image=?, is_visible=?, sort_order=? WHERE id=?");
         $stmt->execute([
             $data['title'],
-            $data['positions'],
-            $data['description'],
-            $data['workType'],
-            $data['tags'],
-            $data['responsibilities'],
-            $data['benefits'],
-            $data['qualifications'],
-            $data['contact'],
-            $data['status'],
-            $data['image'],
-            $data['is_visible'],
-            $data['sort_order'],
+            $data['positions'] ?? 1,
+            $data['description'] ?? '',
+            $data['workType'] ?? '',
+            $data['tags'] ?? '',
+            $data['responsibilities'] ?? '',
+            $data['benefits'] ?? '',
+            $data['qualifications'] ?? '',
+            $data['contact'] ?? '',
+            $data['status'] ?? '',
+            $data['image'] ?? '',
+            $data['is_visible'] ?? 1,
+            $data['sort_order'] ?? 0,
             $data['id']
         ]);
         
