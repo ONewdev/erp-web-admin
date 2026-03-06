@@ -1,3 +1,4 @@
+name: erp-web-admin-backend
 services:
   # ─── PHP 7.3 + Apache ───────────────────────────
   php:
