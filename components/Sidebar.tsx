@@ -27,13 +27,14 @@ export default function Sidebar() {
         { name: "Dashboard", href: "/", icon: <LayoutDashboard size={20} /> },
         { name: "กล่องข้อความ", href: "/message", icon: <MessageSquare size={20} /> },
         { name: "ที่อยู่ติดต่อ", href: "/contact", icon: <Mail size={20} /> },
-        { name: "Job Opportunities", href: "/job", icon: <Briefcase size={20} /> },
+        { name: " Job Opportunities", href: "/job", icon: <Briefcase size={20} /> },
         { name: "สมัคร BI", href: "/powerbi", icon: <BarChart3 size={20} /> },
+        { name: "Page Stats", href: "/page-stats", icon: <Globe size={20} /> },
     ];
 
     return (
         <aside
-            className={`bg-white border-r border-slate-200 flex flex-col hidden lg:flex transition-all duration-300 ease-in-out relative ${isCollapsed ? "w-24" : "w-72"
+            className={`bg-white border-r border-slate-200 flex flex-col transition-all duration-300 ease-in-out relative ${isCollapsed ? "w-24" : "w-72"
                 }`}
         >
             {/* Toggle Button */}
@@ -46,7 +47,7 @@ export default function Sidebar() {
 
             <div className={`p-8 border-b border-slate-100 overflow-hidden ${isCollapsed ? "px-6" : "p-8"}`}>
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand/20 flex-shrink-0">
+                    <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand/20 shrink-0">
                         B
                     </div>
                     {!isCollapsed && (
@@ -76,7 +77,7 @@ export default function Sidebar() {
                                 <div className="absolute left-0 top-3 bottom-3 w-1 bg-white rounded-r-full" />
                             )}
 
-                            <span className={`transition-all duration-300 flex-shrink-0 ${isActive ? "text-white" : "group-hover:text-brand group-hover:scale-110"}`}>
+                            <span className={`transition-all duration-300 shrink-0 ${isActive ? "text-white" : "group-hover:text-brand group-hover:scale-110"}`}>
                                 {item.icon}
                             </span>
 
@@ -89,7 +90,7 @@ export default function Sidebar() {
 
                             {/* Hover Shine Effect */}
                             {!isActive && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:animate-shimmer" />
+                                <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:animate-shimmer" />
                             )}
                         </Link>
                     );
