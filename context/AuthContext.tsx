@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 setUser(null);
                 localStorage.removeItem("admin_user");
                 localStorage.removeItem("admin_token");
-                if (pathname !== "/login") {
+                if (pathname !== "/login" && pathname !== "/login/") {
                     router.push("/login");
                 }
             }
@@ -65,9 +65,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (!loading) {
-            if (!user && pathname !== "/login") {
+            const isLoginPage = pathname === "/login" || pathname === "/login/";
+            if (!user && !isLoginPage) {
                 router.push("/login");
-            } else if (user && pathname === "/login") {
+            } else if (user && isLoginPage) {
                 router.push("/");
             }
         }
@@ -95,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <AuthContext.Provider value={{ user, login, logout, checkAuth, loading }}>
-            {loading && pathname !== "/login" ? (
+            {loading && pathname !== "/login" && pathname !== "/login/" ? (
                 <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-4">
                         <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>

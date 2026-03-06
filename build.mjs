@@ -13,7 +13,7 @@ function run(cmd) {
 try {
   // 1. Next.js build
   console.log('🔨 Building Next.js...');
-  run('npm run build'); // Using npm run build directly to trigger Next.js
+  run('next build');
 
   // 2. Copy .htaccess
   console.log('\n📦 Copying .htaccess...');

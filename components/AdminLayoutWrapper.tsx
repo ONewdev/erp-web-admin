@@ -21,7 +21,7 @@ export default function AdminLayoutWrapper({ children }: { children: React.React
     }
 
     // If on login page, just show the login content
-    if (pathname === "/login") {
+    if (pathname === "/login" || pathname === "/login/") {
         return <>{children}</>;
     }
 
