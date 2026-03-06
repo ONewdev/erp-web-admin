@@ -150,9 +150,9 @@ export default function JobAdminPage() {
     const toggleVisibility = async (job: Job) => {
         try {
             const currentIsVisible = Number(job.is_visible);
-            const updatedJob = { ...job, is_visible: currentIsVisible === 1 ? 0 : 1 };
+            const updatedJob = { ...job, is_visible: currentIsVisible === 1 ? 0 : 1, _method: "PUT" };
             const response = await fetch(API_URL, {
-                method: "PUT",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedJob)
             });
@@ -168,7 +168,7 @@ export default function JobAdminPage() {
     const handleDelete = async (id: number) => {
         if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบตำแหน่งงานนี้?")) return;
         try {
-            const response = await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
+            const response = await fetch(`${API_URL}?id=${id}&_method=DELETE`, { method: "POST" });
             const result = await response.json();
             if (result.success) {
                 fetchJobs();

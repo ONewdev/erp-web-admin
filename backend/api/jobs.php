@@ -6,8 +6,20 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $method = $_SERVER['REQUEST_METHOD'];
-if ($method === 'POST' && isset($_POST['_method']) && strtoupper($_POST['_method']) === 'PUT') {
-    $method = 'PUT';
+if ($method === 'POST') {
+    if (isset($_POST['_method'])) {
+        $method = strtoupper($_POST['_method']);
+    } elseif (isset($_GET['_method'])) {
+        $method = strtoupper($_GET['_method']);
+    } else {
+        $raw = file_get_contents("php://input");
+        if ($raw) {
+            $parsed = json_decode($raw, true);
+            if (isset($parsed['_method'])) {
+                $method = strtoupper($parsed['_method']);
+            }
+        }
+    }
 }
 
 if ($method == 'GET') {
