@@ -50,7 +50,7 @@ ALTER TABLE `user_product_types`
 -- Constraints for table `user_product_types`
 --
 ALTER TABLE `user_product_types`
-  ADD CONSTRAINT `user_product_types_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users_qsoft` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_product_types_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users_erp` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `user_product_types_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `product_categories` (`category_id`) ON DELETE CASCADE;
 COMMIT;
 

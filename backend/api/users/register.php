@@ -50,7 +50,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     // 2. Uniqueness Check (Username and Email)
-    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM users_qsoft WHERE username = :username OR email = :email");
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM users_erp WHERE username = :username OR email = :email");
     $stmtCheck->execute([
         ':username' => $username,
         ':email' => $email
@@ -69,8 +69,8 @@ try {
     // 4. Transaction Start
     $pdo->beginTransaction();
 
-    // 5. Insert into users_qsoft
-    $sqlUser = "INSERT INTO users_qsoft 
+    // 5. Insert into users_erp
+    $sqlUser = "INSERT INTO users_erp 
                 (username, password_hash, contact_name, company_name, address, phone_number, email, brand_names, other_product_details, marketing_source, marketing_source_detail) 
                 VALUES 
                 (:username, :password_hash, :contact_name, :company_name, :address, :phone_number, :email, :brand_names, :other_product_details, :marketing_source, :marketing_source_detail)";

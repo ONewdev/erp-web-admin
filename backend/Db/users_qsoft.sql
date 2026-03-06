@@ -24,10 +24,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users_qsoft`
+-- Table structure for table `users_erp`
 --
 
-CREATE TABLE `users_qsoft` (
+CREATE TABLE `users_erp` (
   `user_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
@@ -49,9 +49,9 @@ CREATE TABLE `users_qsoft` (
 --
 
 --
--- Indexes for table `users_qsoft`
+-- Indexes for table `users_erp`
 --
-ALTER TABLE `users_qsoft`
+ALTER TABLE `users_erp`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`);
@@ -61,9 +61,9 @@ ALTER TABLE `users_qsoft`
 --
 
 --
--- AUTO_INCREMENT for table `users_qsoft`
+-- AUTO_INCREMENT for table `users_erp`
 --
-ALTER TABLE `users_qsoft`
+ALTER TABLE `users_erp`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 

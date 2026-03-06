@@ -32,7 +32,7 @@ try {
     $pdo = $database->getConnection();
 
     // Look up by username or email
-    $stmt = $pdo->prepare("SELECT * FROM users_qsoft WHERE username = :identifier OR email = :identifier LIMIT 1");
+    $stmt = $pdo->prepare("SELECT * FROM users_erp WHERE username = :identifier OR email = :identifier LIMIT 1");
     $stmt->execute([':identifier' => $identifier]);
     $user = $stmt->fetch();
 

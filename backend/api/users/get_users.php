@@ -40,7 +40,7 @@ try {
     // 1. Get total count for pagination
     $countQuery = "
         SELECT COUNT(DISTINCT u.user_id) as total
-        FROM users_qsoft u
+        FROM users_erp u
         LEFT JOIN user_product_types upt ON u.user_id = upt.user_id
         LEFT JOIN product_categories pc ON upt.category_id = pc.category_id
         $whereSQL
@@ -61,7 +61,7 @@ try {
             u.phone_number, u.address, u.brand_names, u.other_product_details, 
             u.marketing_source, u.marketing_source_detail, u.status, u.created_at,
             GROUP_CONCAT(pc.category_name_th SEPARATOR ', ') as product_categories
-        FROM users_qsoft u
+        FROM users_erp u
         LEFT JOIN user_product_types upt ON u.user_id = upt.user_id
         LEFT JOIN product_categories pc ON upt.category_id = pc.category_id
         $whereSQL
