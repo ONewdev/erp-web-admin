@@ -1,0 +1,10 @@
+Options -Indexes
+RewriteEngine On
+
+# ถ้าเป็นไฟล์จริงหรือโฟลเดอร์ ให้ผ่านปกติ
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ถ้าเป็น route ของ Next.js ส่งไป index.html
+RewriteRule ^ index.html [L]
