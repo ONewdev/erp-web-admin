@@ -12,6 +12,7 @@ import {
     Eye,
     EyeOff
 } from "lucide-react";
+import Modal, { ModalHeader, ModalBody, ModalFooter } from '@/components/Modal';
 
 interface Job {
     id: number;
@@ -310,26 +311,16 @@ export default function JobAdminPage() {
             </div>
 
             {/* Add/Edit Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    {/* Background overlay (Click disabled) */}
-                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="2xl">
+                <ModalHeader onClose={() => setIsModalOpen(false)}>
+                    <div>
+                        <h3 className="text-2xl font-black text-slate-800">{editingJob ? "แก้ไขข้อมูลงาน" : "เพิ่มข่าวรับสมัครงาน"}</h3>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Fill in the details below</p>
+                    </div>
+                </ModalHeader>
 
-                    <div className="bg-white w-full max-w-2xl max-h-[90vh] rounded-[3rem] shadow-2xl relative z-10 flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
-                        {/* Modal Header */}
-                        <div className="p-8 pb-4 flex justify-between items-center border-b border-slate-50">
-                            <div>
-                                <h3 className="text-2xl font-black text-slate-800">{editingJob ? "แก้ไขข้อมูลงาน" : "เพิ่มข่าวรับสมัครงาน"}</h3>
-                                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Fill in the details below</p>
-                            </div>
-                            <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-50 text-slate-400 transition-all">
-                                <X className="w-6 h-6" />
-                            </button>
-                        </div>
-
-                        {/* Modal Body */}
-                        <div className="flex-1 overflow-y-auto p-8 no-scrollbar">
-                            <form id="jobForm" onSubmit={handleSubmit} className="space-y-6">
+                <ModalBody className="no-scrollbar p-8">
+                    <form id="jobForm" onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
                                     <div className="md:col-span-2 space-y-2">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">ชื่อตำแหน่งงาน <span className="text-rose-500">*</span></label>
@@ -501,29 +492,26 @@ export default function JobAdminPage() {
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                </ModalBody>
 
-                        {/* Modal Footer */}
-                        <div className="p-8 border-t border-slate-50 flex gap-4 bg-white">
-                            <button
-                                type="button"
-                                onClick={() => setIsModalOpen(false)}
-                                className="flex-1 py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition-all active:scale-95"
-                            >
-                                ยกเลิก
-                            </button>
-                            <button
-                                type="submit"
-                                form="jobForm"
-                                disabled={saving}
-                                className="flex-[2] py-4 bg-brand text-white font-bold rounded-2xl hover:bg-brand-hover shadow-xl shadow-brand/20 transition-all active:scale-95 flex items-center justify-center gap-2"
-                            >
-                                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : (editingJob ? "อัปเดตข้อมูล" : "สร้างตำแหน่งงาน")}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                <ModalFooter className="flex gap-4 w-full justify-between">
+                    <button
+                        type="button"
+                        onClick={() => setIsModalOpen(false)}
+                        className="flex-1 py-4 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition-all active:scale-95"
+                    >
+                        ยกเลิก
+                    </button>
+                    <button
+                        type="submit"
+                        form="jobForm"
+                        disabled={saving}
+                        className="flex-2 py-4 bg-brand text-white font-bold rounded-2xl hover:bg-brand-hover shadow-xl shadow-brand/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                    >
+                        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : (editingJob ? "อัปเดตข้อมูล" : "สร้างตำแหน่งงาน")}
+                    </button>
+                </ModalFooter>
+            </Modal>
         </div>
     );
 }

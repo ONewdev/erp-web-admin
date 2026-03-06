@@ -1,7 +1,13 @@
 <?php
+session_start();
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 include_once '../../utils/response.php';
+
+// Ensure the user is authenticated (Admin session check)
+if (!isset($_SESSION['user_id'])) {
+    errorResponse('Not authenticated', 401);
+}
 
 // Enforce POST method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

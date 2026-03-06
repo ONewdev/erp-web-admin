@@ -1,5 +1,6 @@
 <?php
 // auth.php
+session_start();
 require_once '../../config/cors.php';
 require_once '../../config/database.php';
 $database = new Database();
@@ -41,6 +42,10 @@ if ($method == 'POST') {
                 // Update last login
                 $updateStmt = $conn->prepare("UPDATE admin_users SET last_login = NOW() WHERE id = ?");
                 $updateStmt->execute([$user['id']]);
+
+                // Set session
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
 
                 echo json_encode([
                     "success" => true,

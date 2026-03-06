@@ -13,7 +13,8 @@ import {
     BarChart3,
     ChevronLeft,
     ChevronRight,
-    LogOut
+    LogOut,
+    Users
 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
@@ -30,6 +31,7 @@ export default function Sidebar() {
         { name: " Job Opportunities", href: "/job", icon: <Briefcase size={20} /> },
         { name: "สมัคร BI", href: "/powerbi", icon: <BarChart3 size={20} /> },
         { name: "Page Stats", href: "/page-stats", icon: <Globe size={20} /> },
+        { name: "Registered Users", href: "/users", icon: <Users size={20} /> },
     ];
 
     return (

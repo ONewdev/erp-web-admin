@@ -20,6 +20,7 @@ import {
     Calendar,
     Loader2
 } from 'lucide-react';
+import Modal, { ModalBody } from '@/components/Modal';
 
 export default function PageStatsPage() {
     const [stats, setStats] = useState<StatsData | null>(null);
@@ -419,37 +420,33 @@ export default function PageStatsPage() {
             </div>
 
             {/* Premium Confirm Modal */}
-            {showConfirm && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-100 flex items-center justify-center p-4 animate-in fade-in duration-300">
-                    <div className="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full p-10 border border-slate-100 animate-in zoom-in-95 duration-200">
-                        <div className="text-center">
-                            <div className="mx-auto w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mb-6 text-red-600">
-                                <AlertTriangle className="h-10 w-10" />
-                            </div>
-                            <h3 className="text-2xl font-black text-slate-900 font-kanit mb-4 uppercase tracking-tighter">ยืนยันการลบข้อมูลสำาว?</h3>
-                            <p className="text-slate-500 text-lg leading-relaxed mb-10">
-                                ระบบจะลบ Visitor Log ที่เก่ากว่า <span className="font-black text-red-600 underline underline-offset-4">{cleanupDays} วัน</span><br/>
-                                ข้อมูลที่ถูกลบไปแล้ว <span className="font-bold text-slate-900">ไม่สามารถกู้คืนได้</span> โปรดใช้ความระมัดระวัง
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <button
-                                onClick={() => setShowConfirm(false)}
-                                className="px-6 py-4 bg-slate-100 rounded-2xl text-slate-600 font-bold hover:bg-slate-200 transition-colors"
-                            >
-                                ยกเลิก
-                            </button>
-                            <button
-                                onClick={handleCleanup}
-                                disabled={cleanupLoading}
-                                className="px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 hover:shadow-xl hover:shadow-red-500/20 transition-all flex items-center justify-center gap-2"
-                            >
-                                {cleanupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <span>ยืนยันดำเนินการ</span>}
-                            </button>
-                        </div>
+            <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} maxWidth="md" className="font-kanit">
+                <ModalBody className="p-10 flex flex-col items-center justify-center text-center">
+                    <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mb-6 text-red-600">
+                        <AlertTriangle className="h-10 w-10" />
                     </div>
-                </div>
-            )}
+                    <h3 className="text-2xl font-black text-slate-900 font-kanit mb-4 uppercase tracking-tighter">ยืนยันการลบข้อมูลสำาว?</h3>
+                    <p className="text-slate-500 text-lg leading-relaxed mb-10 w-full text-center">
+                        ระบบจะลบ Visitor Log ที่เก่ากว่า <span className="font-black text-red-600 underline underline-offset-4">{cleanupDays} วัน</span><br/>
+                        ข้อมูลที่ถูกลบไปแล้ว <span className="font-bold text-slate-900">ไม่สามารถกู้คืนได้</span> โปรดใช้ความระมัดระวัง
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 w-full">
+                        <button
+                            onClick={() => setShowConfirm(false)}
+                            className="px-6 py-4 bg-slate-100 rounded-2xl text-slate-600 font-bold hover:bg-slate-200 transition-colors w-full"
+                        >
+                            ยกเลิก
+                        </button>
+                        <button
+                            onClick={handleCleanup}
+                            disabled={cleanupLoading}
+                            className="px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 hover:shadow-xl hover:shadow-red-500/20 transition-all flex items-center justify-center gap-2 w-full"
+                        >
+                            {cleanupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <span>ยืนยันดำเนินการ</span>}
+                        </button>
+                    </div>
+                </ModalBody>
+            </Modal>
         </div>
     );
 }
