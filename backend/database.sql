@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- Default admin user (username: admin, password: admin1234)
 -- Hash generated with password_hash('admin1234', PASSWORD_BCRYPT)
 INSERT INTO admin_users (username, password, full_name) 
-VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'BCI Admin')
+VALUES ('admin', '$2y$10$xkflvC/MC5fuX0TI1pQqzO/DduPZlEe0i5OGpKaF9nsgj5yBjdvyy','BCI Admin')
 ON DUPLICATE KEY UPDATE password = VALUES(password), full_name = VALUES(full_name);
 
 CREATE TABLE IF NOT EXISTS `page_stats` (
