@@ -179,6 +179,29 @@ CREATE TABLE IF NOT EXISTS `user_product_types` (
   CONSTRAINT `user_product_types_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `product_categories` (`category_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `page_stats` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page` varchar(255) NOT NULL,
+  `stat_date` date NOT NULL,
+  `device_type` varchar(20) DEFAULT 'unknown',
+  `view_count` int DEFAULT 0,
+  `unique_user_count` int DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_metrics` (`page`, `stat_date`, `device_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `page_daily_visitors` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `page` varchar(255) NOT NULL,
+  `visitor_id` varchar(255) NOT NULL,
+  `visit_date` date NOT NULL,
+  `device_type` varchar(20) DEFAULT 'unknown',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_visit` (`page`, `visitor_id`, `visit_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
