@@ -130,3 +130,10 @@ CREATE TABLE IF NOT EXISTS `page_daily_visitors` (
   UNIQUE KEY `unique_visit` (`page`, `visitor_id`, `visit_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `welcome_popup` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `welcome_img` varchar(255) DEFAULT NULL,
+  `show_status` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

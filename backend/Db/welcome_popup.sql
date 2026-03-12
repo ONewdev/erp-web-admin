@@ -1,0 +1,6 @@
+CREATE TABLE welcome_popup (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  welcome_img VARCHAR(255),
+  show_status TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

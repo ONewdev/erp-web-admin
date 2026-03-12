@@ -14,7 +14,8 @@ import {
     ChevronLeft,
     ChevronRight,
     LogOut,
-    Users
+    Users,
+    Image
 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
@@ -28,7 +29,8 @@ export default function Sidebar() {
         { name: "Dashboard", href: "/", icon: <LayoutDashboard size={20} /> },
         { name: "กล่องข้อความ", href: "/message", icon: <MessageSquare size={20} /> },
         { name: "ที่อยู่ติดต่อ", href: "/contact", icon: <Mail size={20} /> },
-        { name: " Job Opportunities", href: "/job", icon: <Briefcase size={20} /> },
+        { name: "Welcome Popup", href: "/welcome-popup", icon: <Image size={20} /> },
+        { name: "Job Opportunities", href: "/job", icon: <Briefcase size={20} /> },
         { name: "สมัคร BI", href: "/powerbi", icon: <BarChart3 size={20} /> },
         { name: "Page Stats", href: "/page-stats", icon: <Globe size={20} /> },
         { name: "Registered Users", href: "/users", icon: <Users size={20} /> },
